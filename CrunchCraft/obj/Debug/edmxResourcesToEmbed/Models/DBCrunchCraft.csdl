@@ -1,0 +1,221 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="CRUNCHCRAFTModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Inventory">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="Product" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Qty" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="PublicPrice" Type="Decimal" Precision="18" Scale="0" />
+    <NavigationProperty Name="InventorySKU" Relationship="Self.FK__Inventory__fk_Id__59063A47" FromRole="Inventory" ToRole="InventorySKU" />
+    <NavigationProperty Name="PODet" Relationship="Self.FK__PODet__fk_IdInve__5535A963" FromRole="Inventory" ToRole="PODet" />
+  </EntityType>
+  <EntityType Name="InventorySKU">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="SKU" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="fk_IdPODet" Type="Int32" />
+    <Property Name="fk_IdInventory" Type="Int32" />
+    <Property Name="Product" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Qty" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="Balance" Type="Decimal" Precision="18" Scale="0" />
+    <NavigationProperty Name="Inventory" Relationship="Self.FK__Inventory__fk_Id__59063A47" FromRole="InventorySKU" ToRole="Inventory" />
+    <NavigationProperty Name="PODet" Relationship="Self.FK__Inventory__fk_Id__5812160E" FromRole="InventorySKU" ToRole="PODet" />
+    <NavigationProperty Name="MixCreationDetails" Relationship="Self.FK__MixCreati__fk_Id__60A75C0F" FromRole="InventorySKU" ToRole="MixCreationDetails" />
+  </EntityType>
+  <EntityType Name="MixCreation">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="ProductName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="PreSale" Type="Boolean" />
+    <Property Name="Qty" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="CreateDate" Type="DateTime" Precision="3" />
+    <Property Name="SKU" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="MixCreationDetails" Relationship="Self.FK__MixCreati__fk_Id__5FB337D6" FromRole="MixCreation" ToRole="MixCreationDetails" />
+  </EntityType>
+  <EntityType Name="MixCreationDetails">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="fk_IdMixCreation" Type="Int32" />
+    <Property Name="fk_IdInventorySKU" Type="Int32" />
+    <Property Name="Qty" Type="Decimal" Precision="18" Scale="0" />
+    <NavigationProperty Name="InventorySKU" Relationship="Self.FK__MixCreati__fk_Id__60A75C0F" FromRole="MixCreationDetails" ToRole="InventorySKU" />
+    <NavigationProperty Name="MixCreation" Relationship="Self.FK__MixCreati__fk_Id__5FB337D6" FromRole="MixCreationDetails" ToRole="MixCreation" />
+  </EntityType>
+  <EntityType Name="PO">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="fk_IdVendor" Type="Int32" />
+    <Property Name="Status" Type="Boolean" />
+    <NavigationProperty Name="Vendors" Relationship="Self.FK__PO__fk_IdVendor__4BAC3F29" FromRole="PO" ToRole="Vendors" />
+    <NavigationProperty Name="PODet" Relationship="Self.FK__PODet__fk_IdPO__5441852A" FromRole="PO" ToRole="PODet" />
+  </EntityType>
+  <EntityType Name="PODet">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="fk_IdPO" Type="Int32" />
+    <Property Name="fk_IdInventory" Type="Int32" />
+    <Property Name="Product" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Qty" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="Balance" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="Unit" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="Inventory" Relationship="Self.FK__PODet__fk_IdInve__5535A963" FromRole="PODet" ToRole="Inventory" />
+    <NavigationProperty Name="InventorySKU" Relationship="Self.FK__Inventory__fk_Id__5812160E" FromRole="PODet" ToRole="InventorySKU" />
+    <NavigationProperty Name="PO" Relationship="Self.FK__PODet__fk_IdPO__5441852A" FromRole="PODet" ToRole="PO" />
+  </EntityType>
+  <EntityType Name="SalesOrder">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="Product" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Qty" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="Unit" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+    <Property Name="Price" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="SKU" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="Vendors">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Currency" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="PO" Relationship="Self.FK__PO__fk_IdVendor__4BAC3F29" FromRole="Vendors" ToRole="PO" />
+  </EntityType>
+  <Association Name="FK__Inventory__fk_Id__59063A47">
+    <End Role="Inventory" Type="Self.Inventory" Multiplicity="0..1" />
+    <End Role="InventorySKU" Type="Self.InventorySKU" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Inventory">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="InventorySKU">
+        <PropertyRef Name="fk_IdInventory" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__PODet__fk_IdInve__5535A963">
+    <End Role="Inventory" Type="Self.Inventory" Multiplicity="0..1" />
+    <End Role="PODet" Type="Self.PODet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Inventory">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="PODet">
+        <PropertyRef Name="fk_IdInventory" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Inventory__fk_Id__5812160E">
+    <End Role="PODet" Type="Self.PODet" Multiplicity="0..1" />
+    <End Role="InventorySKU" Type="Self.InventorySKU" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="PODet">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="InventorySKU">
+        <PropertyRef Name="fk_IdPODet" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__MixCreati__fk_Id__60A75C0F">
+    <End Role="InventorySKU" Type="Self.InventorySKU" Multiplicity="0..1" />
+    <End Role="MixCreationDetails" Type="Self.MixCreationDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="InventorySKU">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="MixCreationDetails">
+        <PropertyRef Name="fk_IdInventorySKU" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__MixCreati__fk_Id__5FB337D6">
+    <End Role="MixCreation" Type="Self.MixCreation" Multiplicity="0..1" />
+    <End Role="MixCreationDetails" Type="Self.MixCreationDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="MixCreation">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="MixCreationDetails">
+        <PropertyRef Name="fk_IdMixCreation" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__PO__fk_IdVendor__4BAC3F29">
+    <End Role="Vendors" Type="Self.Vendors" Multiplicity="0..1" />
+    <End Role="PO" Type="Self.PO" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Vendors">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="PO">
+        <PropertyRef Name="fk_IdVendor" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__PODet__fk_IdPO__5441852A">
+    <End Role="PO" Type="Self.PO" Multiplicity="0..1" />
+    <End Role="PODet" Type="Self.PODet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="PO">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="PODet">
+        <PropertyRef Name="fk_IdPO" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="CRUNCHCRAFTEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Inventory" EntityType="Self.Inventory" />
+    <EntitySet Name="InventorySKU" EntityType="Self.InventorySKU" />
+    <EntitySet Name="MixCreation" EntityType="Self.MixCreation" />
+    <EntitySet Name="MixCreationDetails" EntityType="Self.MixCreationDetails" />
+    <EntitySet Name="PO" EntityType="Self.PO" />
+    <EntitySet Name="PODet" EntityType="Self.PODet" />
+    <EntitySet Name="SalesOrder" EntityType="Self.SalesOrder" />
+    <EntitySet Name="Vendors" EntityType="Self.Vendors" />
+    <AssociationSet Name="FK__Inventory__fk_Id__59063A47" Association="Self.FK__Inventory__fk_Id__59063A47">
+      <End Role="Inventory" EntitySet="Inventory" />
+      <End Role="InventorySKU" EntitySet="InventorySKU" />
+    </AssociationSet>
+    <AssociationSet Name="FK__PODet__fk_IdInve__5535A963" Association="Self.FK__PODet__fk_IdInve__5535A963">
+      <End Role="Inventory" EntitySet="Inventory" />
+      <End Role="PODet" EntitySet="PODet" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Inventory__fk_Id__5812160E" Association="Self.FK__Inventory__fk_Id__5812160E">
+      <End Role="PODet" EntitySet="PODet" />
+      <End Role="InventorySKU" EntitySet="InventorySKU" />
+    </AssociationSet>
+    <AssociationSet Name="FK__MixCreati__fk_Id__60A75C0F" Association="Self.FK__MixCreati__fk_Id__60A75C0F">
+      <End Role="InventorySKU" EntitySet="InventorySKU" />
+      <End Role="MixCreationDetails" EntitySet="MixCreationDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK__MixCreati__fk_Id__5FB337D6" Association="Self.FK__MixCreati__fk_Id__5FB337D6">
+      <End Role="MixCreation" EntitySet="MixCreation" />
+      <End Role="MixCreationDetails" EntitySet="MixCreationDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK__PO__fk_IdVendor__4BAC3F29" Association="Self.FK__PO__fk_IdVendor__4BAC3F29">
+      <End Role="Vendors" EntitySet="Vendors" />
+      <End Role="PO" EntitySet="PO" />
+    </AssociationSet>
+    <AssociationSet Name="FK__PODet__fk_IdPO__5441852A" Association="Self.FK__PODet__fk_IdPO__5441852A">
+      <End Role="PO" EntitySet="PO" />
+      <End Role="PODet" EntitySet="PODet" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

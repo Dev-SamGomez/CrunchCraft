@@ -1,0 +1,796 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="masterModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AccountsPayable">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="Qty" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="Price" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="Currency" Type="nvarchar" MaxLength="10" />
+          <Property Name="Status" Type="bit" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="PayDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="ActiveInventory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="fk_IdPO" Type="int" />
+          <Property Name="ProductName" Type="nvarchar(max)" />
+          <Property Name="Qty" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="Price" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="Unit" Type="nvarchar" MaxLength="5" />
+        </EntityType>
+        <EntityType Name="Inventory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Product" Type="nvarchar(max)" />
+          <Property Name="Qty" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="PublicPrice" Type="decimal" Precision="18" Scale="0" />
+        </EntityType>
+        <EntityType Name="InventoryAdjustements">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="fk_IdKindOfInventory" Type="int" />
+          <Property Name="KindOfAdjust" Type="nvarchar" MaxLength="5" />
+          <Property Name="Qty_Before" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="Qty_After" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="CreateDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="InventorySKU">
+          <Key>
+            <PropertyRef Name="SKU" />
+          </Key>
+          <Property Name="SKU" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="fk_IdPODet" Type="int" />
+          <Property Name="fk_IdInventory" Type="int" />
+          <Property Name="Product" Type="nvarchar(max)" />
+          <Property Name="Qty" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="Balance" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="CreateDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="KindOfInventory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Kind_Inventory" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="MixCreation">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProductName" Type="nvarchar(max)" />
+          <Property Name="PreSale" Type="bit" />
+          <Property Name="Qty" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="CreateDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="MixCreationDetails">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="fk_IdMixCreation" Type="int" />
+          <Property Name="fk_IdInventorySKU" Type="int" />
+          <Property Name="Qty" Type="decimal" Precision="18" Scale="0" />
+        </EntityType>
+        <!--Errores durante la generación:
+advertencia 6002: La tabla o vista 'master.dbo.MSreplication_options' no tiene definida ninguna clave principal. Se ha inferido la clave y la definición se creado como una vista o tabla de solo lectura.-->
+        <EntityType Name="PO">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="fk_IdVendor" Type="int" />
+          <Property Name="fk_IdKindOfInventory" Type="int" />
+          <Property Name="Status" Type="bit" />
+        </EntityType>
+        <EntityType Name="PODet">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="fk_IdPO" Type="int" />
+          <Property Name="Product" Type="nvarchar(max)" />
+          <Property Name="Qty" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="Balance" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="Unit" Type="nvarchar" MaxLength="5" />
+          <Property Name="Price" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="CreatedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="SalesOrder">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="fk_SKUInventorySKU" Type="int" />
+          <Property Name="Product" Type="nvarchar(max)" />
+          <Property Name="Qty" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="Unit" Type="nvarchar" MaxLength="10" />
+          <Property Name="Price" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="CreatedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Vendors">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" />
+          <Property Name="Currency" Type="nvarchar" MaxLength="10" />
+        </EntityType>
+        <Association Name="FK__ActiveInv__fk_Id__3F6663D5">
+          <End Role="PO" Type="Self.PO" Multiplicity="0..1" />
+          <End Role="ActiveInventory" Type="Self.ActiveInventory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PO">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ActiveInventory">
+              <PropertyRef Name="fk_IdPO" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Inventory__fk_Id__320C68B7">
+          <End Role="PODet" Type="Self.PODet" Multiplicity="0..1" />
+          <End Role="InventorySKU" Type="Self.InventorySKU" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PODet">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="InventorySKU">
+              <PropertyRef Name="fk_IdPODet" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Inventory__fk_Id__33008CF0">
+          <End Role="Inventory" Type="Self.Inventory" Multiplicity="0..1" />
+          <End Role="InventorySKU" Type="Self.InventorySKU" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Inventory">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="InventorySKU">
+              <PropertyRef Name="fk_IdInventory" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Inventory__fk_Id__442B18F2">
+          <End Role="KindOfInventory" Type="Self.KindOfInventory" Multiplicity="0..1" />
+          <End Role="InventoryAdjustements" Type="Self.InventoryAdjustements" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="KindOfInventory">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="InventoryAdjustements">
+              <PropertyRef Name="fk_IdKindOfInventory" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__MixCreati__fk_Id__3B95D2F1">
+          <End Role="MixCreation" Type="Self.MixCreation" Multiplicity="0..1" />
+          <End Role="MixCreationDetails" Type="Self.MixCreationDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MixCreation">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MixCreationDetails">
+              <PropertyRef Name="fk_IdMixCreation" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__MixCreati__fk_Id__3C89F72A">
+          <End Role="InventorySKU" Type="Self.InventorySKU" Multiplicity="0..1" />
+          <End Role="MixCreationDetails" Type="Self.MixCreationDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InventorySKU">
+              <PropertyRef Name="SKU" />
+            </Principal>
+            <Dependent Role="MixCreationDetails">
+              <PropertyRef Name="fk_IdInventorySKU" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PO__fk_IdKindOfI__2A6B46EF">
+          <End Role="KindOfInventory" Type="Self.KindOfInventory" Multiplicity="0..1" />
+          <End Role="PO" Type="Self.PO" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="KindOfInventory">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PO">
+              <PropertyRef Name="fk_IdKindOfInventory" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PO__fk_IdVendor__297722B6">
+          <End Role="Vendors" Type="Self.Vendors" Multiplicity="0..1" />
+          <End Role="PO" Type="Self.PO" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Vendors">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PO">
+              <PropertyRef Name="fk_IdVendor" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PODet__fk_IdPO__2F2FFC0C">
+          <End Role="PO" Type="Self.PO" Multiplicity="0..1" />
+          <End Role="PODet" Type="Self.PODet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PO">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PODet">
+              <PropertyRef Name="fk_IdPO" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SalesOrde__fk_SK__35DCF99B">
+          <End Role="InventorySKU" Type="Self.InventorySKU" Multiplicity="0..1" />
+          <End Role="SalesOrder" Type="Self.SalesOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InventorySKU">
+              <PropertyRef Name="SKU" />
+            </Principal>
+            <Dependent Role="SalesOrder">
+              <PropertyRef Name="fk_SKUInventorySKU" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="masterModelStoreContainer">
+          <EntitySet Name="AccountsPayable" EntityType="Self.AccountsPayable" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ActiveInventory" EntityType="Self.ActiveInventory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Inventory" EntityType="Self.Inventory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="InventoryAdjustements" EntityType="Self.InventoryAdjustements" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="InventorySKU" EntityType="Self.InventorySKU" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="KindOfInventory" EntityType="Self.KindOfInventory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MixCreation" EntityType="Self.MixCreation" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MixCreationDetails" EntityType="Self.MixCreationDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PO" EntityType="Self.PO" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PODet" EntityType="Self.PODet" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SalesOrder" EntityType="Self.SalesOrder" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Vendors" EntityType="Self.Vendors" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__ActiveInv__fk_Id__3F6663D5" Association="Self.FK__ActiveInv__fk_Id__3F6663D5">
+            <End Role="PO" EntitySet="PO" />
+            <End Role="ActiveInventory" EntitySet="ActiveInventory" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Inventory__fk_Id__320C68B7" Association="Self.FK__Inventory__fk_Id__320C68B7">
+            <End Role="PODet" EntitySet="PODet" />
+            <End Role="InventorySKU" EntitySet="InventorySKU" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Inventory__fk_Id__33008CF0" Association="Self.FK__Inventory__fk_Id__33008CF0">
+            <End Role="Inventory" EntitySet="Inventory" />
+            <End Role="InventorySKU" EntitySet="InventorySKU" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Inventory__fk_Id__442B18F2" Association="Self.FK__Inventory__fk_Id__442B18F2">
+            <End Role="KindOfInventory" EntitySet="KindOfInventory" />
+            <End Role="InventoryAdjustements" EntitySet="InventoryAdjustements" />
+          </AssociationSet>
+          <AssociationSet Name="FK__MixCreati__fk_Id__3B95D2F1" Association="Self.FK__MixCreati__fk_Id__3B95D2F1">
+            <End Role="MixCreation" EntitySet="MixCreation" />
+            <End Role="MixCreationDetails" EntitySet="MixCreationDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK__MixCreati__fk_Id__3C89F72A" Association="Self.FK__MixCreati__fk_Id__3C89F72A">
+            <End Role="InventorySKU" EntitySet="InventorySKU" />
+            <End Role="MixCreationDetails" EntitySet="MixCreationDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PO__fk_IdKindOfI__2A6B46EF" Association="Self.FK__PO__fk_IdKindOfI__2A6B46EF">
+            <End Role="KindOfInventory" EntitySet="KindOfInventory" />
+            <End Role="PO" EntitySet="PO" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PO__fk_IdVendor__297722B6" Association="Self.FK__PO__fk_IdVendor__297722B6">
+            <End Role="Vendors" EntitySet="Vendors" />
+            <End Role="PO" EntitySet="PO" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PODet__fk_IdPO__2F2FFC0C" Association="Self.FK__PODet__fk_IdPO__2F2FFC0C">
+            <End Role="PO" EntitySet="PO" />
+            <End Role="PODet" EntitySet="PODet" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SalesOrde__fk_SK__35DCF99B" Association="Self.FK__SalesOrde__fk_SK__35DCF99B">
+            <End Role="InventorySKU" EntitySet="InventorySKU" />
+            <End Role="SalesOrder" EntitySet="SalesOrder" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="masterModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="AccountsPayable">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Qty" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="Price" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="Currency" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="PayDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="ActiveInventory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="fk_IdPO" Type="Int32" />
+          <Property Name="ProductName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Qty" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="Price" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="Unit" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="PO" Relationship="Self.FK__ActiveInv__fk_Id__3F6663D5" FromRole="ActiveInventory" ToRole="PO" />
+        </EntityType>
+        <EntityType Name="Inventory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Product" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Qty" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="PublicPrice" Type="Decimal" Precision="18" Scale="0" />
+          <NavigationProperty Name="InventorySKU" Relationship="Self.FK__Inventory__fk_Id__33008CF0" FromRole="Inventory" ToRole="InventorySKU" />
+        </EntityType>
+        <EntityType Name="InventoryAdjustements">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="fk_IdKindOfInventory" Type="Int32" />
+          <Property Name="KindOfAdjust" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="Qty_Before" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="Qty_After" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="KindOfInventory" Relationship="Self.FK__Inventory__fk_Id__442B18F2" FromRole="InventoryAdjustements" ToRole="KindOfInventory" />
+        </EntityType>
+        <EntityType Name="InventorySKU">
+          <Key>
+            <PropertyRef Name="SKU" />
+          </Key>
+          <Property Name="SKU" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="fk_IdPODet" Type="Int32" />
+          <Property Name="fk_IdInventory" Type="Int32" />
+          <Property Name="Product" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Qty" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="Balance" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Inventory" Relationship="Self.FK__Inventory__fk_Id__33008CF0" FromRole="InventorySKU" ToRole="Inventory" />
+          <NavigationProperty Name="PODet" Relationship="Self.FK__Inventory__fk_Id__320C68B7" FromRole="InventorySKU" ToRole="PODet" />
+          <NavigationProperty Name="MixCreationDetails" Relationship="Self.FK__MixCreati__fk_Id__3C89F72A" FromRole="InventorySKU" ToRole="MixCreationDetails" />
+          <NavigationProperty Name="SalesOrder" Relationship="Self.FK__SalesOrde__fk_SK__35DCF99B" FromRole="InventorySKU" ToRole="SalesOrder" />
+        </EntityType>
+        <EntityType Name="KindOfInventory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Kind_Inventory" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="InventoryAdjustements" Relationship="Self.FK__Inventory__fk_Id__442B18F2" FromRole="KindOfInventory" ToRole="InventoryAdjustements" />
+          <NavigationProperty Name="PO" Relationship="Self.FK__PO__fk_IdKindOfI__2A6B46EF" FromRole="KindOfInventory" ToRole="PO" />
+        </EntityType>
+        <EntityType Name="MixCreation">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PreSale" Type="Boolean" />
+          <Property Name="Qty" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="MixCreationDetails" Relationship="Self.FK__MixCreati__fk_Id__3B95D2F1" FromRole="MixCreation" ToRole="MixCreationDetails" />
+        </EntityType>
+        <EntityType Name="MixCreationDetails">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="fk_IdMixCreation" Type="Int32" />
+          <Property Name="fk_IdInventorySKU" Type="Int32" />
+          <Property Name="Qty" Type="Decimal" Precision="18" Scale="0" />
+          <NavigationProperty Name="InventorySKU" Relationship="Self.FK__MixCreati__fk_Id__3C89F72A" FromRole="MixCreationDetails" ToRole="InventorySKU" />
+          <NavigationProperty Name="MixCreation" Relationship="Self.FK__MixCreati__fk_Id__3B95D2F1" FromRole="MixCreationDetails" ToRole="MixCreation" />
+        </EntityType>
+        <EntityType Name="PO">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="fk_IdVendor" Type="Int32" />
+          <Property Name="fk_IdKindOfInventory" Type="Int32" />
+          <Property Name="Status" Type="Boolean" />
+          <NavigationProperty Name="ActiveInventory" Relationship="Self.FK__ActiveInv__fk_Id__3F6663D5" FromRole="PO" ToRole="ActiveInventory" />
+          <NavigationProperty Name="KindOfInventory" Relationship="Self.FK__PO__fk_IdKindOfI__2A6B46EF" FromRole="PO" ToRole="KindOfInventory" />
+          <NavigationProperty Name="Vendors" Relationship="Self.FK__PO__fk_IdVendor__297722B6" FromRole="PO" ToRole="Vendors" />
+          <NavigationProperty Name="PODet" Relationship="Self.FK__PODet__fk_IdPO__2F2FFC0C" FromRole="PO" ToRole="PODet" />
+        </EntityType>
+        <EntityType Name="PODet">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="fk_IdPO" Type="Int32" />
+          <Property Name="Product" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Qty" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="Balance" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="Unit" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="Price" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="InventorySKU" Relationship="Self.FK__Inventory__fk_Id__320C68B7" FromRole="PODet" ToRole="InventorySKU" />
+          <NavigationProperty Name="PO" Relationship="Self.FK__PODet__fk_IdPO__2F2FFC0C" FromRole="PODet" ToRole="PO" />
+        </EntityType>
+        <EntityType Name="SalesOrder">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="fk_SKUInventorySKU" Type="Int32" />
+          <Property Name="Product" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Qty" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="Unit" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Price" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="InventorySKU" Relationship="Self.FK__SalesOrde__fk_SK__35DCF99B" FromRole="SalesOrder" ToRole="InventorySKU" />
+        </EntityType>
+        <EntityType Name="Vendors">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Currency" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="PO" Relationship="Self.FK__PO__fk_IdVendor__297722B6" FromRole="Vendors" ToRole="PO" />
+        </EntityType>
+        <Association Name="FK__ActiveInv__fk_Id__3F6663D5">
+          <End Role="PO" Type="Self.PO" Multiplicity="0..1" />
+          <End Role="ActiveInventory" Type="Self.ActiveInventory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PO">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ActiveInventory">
+              <PropertyRef Name="fk_IdPO" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Inventory__fk_Id__33008CF0">
+          <End Role="Inventory" Type="Self.Inventory" Multiplicity="0..1" />
+          <End Role="InventorySKU" Type="Self.InventorySKU" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Inventory">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="InventorySKU">
+              <PropertyRef Name="fk_IdInventory" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Inventory__fk_Id__442B18F2">
+          <End Role="KindOfInventory" Type="Self.KindOfInventory" Multiplicity="0..1" />
+          <End Role="InventoryAdjustements" Type="Self.InventoryAdjustements" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="KindOfInventory">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="InventoryAdjustements">
+              <PropertyRef Name="fk_IdKindOfInventory" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Inventory__fk_Id__320C68B7">
+          <End Role="PODet" Type="Self.PODet" Multiplicity="0..1" />
+          <End Role="InventorySKU" Type="Self.InventorySKU" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PODet">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="InventorySKU">
+              <PropertyRef Name="fk_IdPODet" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__MixCreati__fk_Id__3C89F72A">
+          <End Role="InventorySKU" Type="Self.InventorySKU" Multiplicity="0..1" />
+          <End Role="MixCreationDetails" Type="Self.MixCreationDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InventorySKU">
+              <PropertyRef Name="SKU" />
+            </Principal>
+            <Dependent Role="MixCreationDetails">
+              <PropertyRef Name="fk_IdInventorySKU" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SalesOrde__fk_SK__35DCF99B">
+          <End Role="InventorySKU" Type="Self.InventorySKU" Multiplicity="0..1" />
+          <End Role="SalesOrder" Type="Self.SalesOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InventorySKU">
+              <PropertyRef Name="SKU" />
+            </Principal>
+            <Dependent Role="SalesOrder">
+              <PropertyRef Name="fk_SKUInventorySKU" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PO__fk_IdKindOfI__2A6B46EF">
+          <End Role="KindOfInventory" Type="Self.KindOfInventory" Multiplicity="0..1" />
+          <End Role="PO" Type="Self.PO" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="KindOfInventory">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PO">
+              <PropertyRef Name="fk_IdKindOfInventory" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__MixCreati__fk_Id__3B95D2F1">
+          <End Role="MixCreation" Type="Self.MixCreation" Multiplicity="0..1" />
+          <End Role="MixCreationDetails" Type="Self.MixCreationDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MixCreation">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MixCreationDetails">
+              <PropertyRef Name="fk_IdMixCreation" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PO__fk_IdVendor__297722B6">
+          <End Role="Vendors" Type="Self.Vendors" Multiplicity="0..1" />
+          <End Role="PO" Type="Self.PO" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Vendors">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PO">
+              <PropertyRef Name="fk_IdVendor" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PODet__fk_IdPO__2F2FFC0C">
+          <End Role="PO" Type="Self.PO" Multiplicity="0..1" />
+          <End Role="PODet" Type="Self.PODet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PO">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PODet">
+              <PropertyRef Name="fk_IdPO" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="masterEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="AccountsPayable" EntityType="Self.AccountsPayable" />
+          <EntitySet Name="ActiveInventory" EntityType="Self.ActiveInventory" />
+          <EntitySet Name="Inventory" EntityType="Self.Inventory" />
+          <EntitySet Name="InventoryAdjustements" EntityType="Self.InventoryAdjustements" />
+          <EntitySet Name="InventorySKU" EntityType="Self.InventorySKU" />
+          <EntitySet Name="KindOfInventory" EntityType="Self.KindOfInventory" />
+          <EntitySet Name="MixCreation" EntityType="Self.MixCreation" />
+          <EntitySet Name="MixCreationDetails" EntityType="Self.MixCreationDetails" />
+          <EntitySet Name="PO" EntityType="Self.PO" />
+          <EntitySet Name="PODet" EntityType="Self.PODet" />
+          <EntitySet Name="SalesOrder" EntityType="Self.SalesOrder" />
+          <EntitySet Name="Vendors" EntityType="Self.Vendors" />
+          <AssociationSet Name="FK__ActiveInv__fk_Id__3F6663D5" Association="Self.FK__ActiveInv__fk_Id__3F6663D5">
+            <End Role="PO" EntitySet="PO" />
+            <End Role="ActiveInventory" EntitySet="ActiveInventory" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Inventory__fk_Id__33008CF0" Association="Self.FK__Inventory__fk_Id__33008CF0">
+            <End Role="Inventory" EntitySet="Inventory" />
+            <End Role="InventorySKU" EntitySet="InventorySKU" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Inventory__fk_Id__442B18F2" Association="Self.FK__Inventory__fk_Id__442B18F2">
+            <End Role="KindOfInventory" EntitySet="KindOfInventory" />
+            <End Role="InventoryAdjustements" EntitySet="InventoryAdjustements" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Inventory__fk_Id__320C68B7" Association="Self.FK__Inventory__fk_Id__320C68B7">
+            <End Role="PODet" EntitySet="PODet" />
+            <End Role="InventorySKU" EntitySet="InventorySKU" />
+          </AssociationSet>
+          <AssociationSet Name="FK__MixCreati__fk_Id__3C89F72A" Association="Self.FK__MixCreati__fk_Id__3C89F72A">
+            <End Role="InventorySKU" EntitySet="InventorySKU" />
+            <End Role="MixCreationDetails" EntitySet="MixCreationDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SalesOrde__fk_SK__35DCF99B" Association="Self.FK__SalesOrde__fk_SK__35DCF99B">
+            <End Role="InventorySKU" EntitySet="InventorySKU" />
+            <End Role="SalesOrder" EntitySet="SalesOrder" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PO__fk_IdKindOfI__2A6B46EF" Association="Self.FK__PO__fk_IdKindOfI__2A6B46EF">
+            <End Role="KindOfInventory" EntitySet="KindOfInventory" />
+            <End Role="PO" EntitySet="PO" />
+          </AssociationSet>
+          <AssociationSet Name="FK__MixCreati__fk_Id__3B95D2F1" Association="Self.FK__MixCreati__fk_Id__3B95D2F1">
+            <End Role="MixCreation" EntitySet="MixCreation" />
+            <End Role="MixCreationDetails" EntitySet="MixCreationDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PO__fk_IdVendor__297722B6" Association="Self.FK__PO__fk_IdVendor__297722B6">
+            <End Role="Vendors" EntitySet="Vendors" />
+            <End Role="PO" EntitySet="PO" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PODet__fk_IdPO__2F2FFC0C" Association="Self.FK__PODet__fk_IdPO__2F2FFC0C">
+            <End Role="PO" EntitySet="PO" />
+            <End Role="PODet" EntitySet="PODet" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="masterModelStoreContainer" CdmEntityContainer="masterEntities">
+          <EntitySetMapping Name="AccountsPayable">
+            <EntityTypeMapping TypeName="masterModel.AccountsPayable">
+              <MappingFragment StoreEntitySet="AccountsPayable">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Qty" ColumnName="Qty" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Currency" ColumnName="Currency" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="PayDate" ColumnName="PayDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ActiveInventory">
+            <EntityTypeMapping TypeName="masterModel.ActiveInventory">
+              <MappingFragment StoreEntitySet="ActiveInventory">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="fk_IdPO" ColumnName="fk_IdPO" />
+                <ScalarProperty Name="ProductName" ColumnName="ProductName" />
+                <ScalarProperty Name="Qty" ColumnName="Qty" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Unit" ColumnName="Unit" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Inventory">
+            <EntityTypeMapping TypeName="masterModel.Inventory">
+              <MappingFragment StoreEntitySet="Inventory">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Product" ColumnName="Product" />
+                <ScalarProperty Name="Qty" ColumnName="Qty" />
+                <ScalarProperty Name="PublicPrice" ColumnName="PublicPrice" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InventoryAdjustements">
+            <EntityTypeMapping TypeName="masterModel.InventoryAdjustements">
+              <MappingFragment StoreEntitySet="InventoryAdjustements">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="fk_IdKindOfInventory" ColumnName="fk_IdKindOfInventory" />
+                <ScalarProperty Name="KindOfAdjust" ColumnName="KindOfAdjust" />
+                <ScalarProperty Name="Qty_Before" ColumnName="Qty_Before" />
+                <ScalarProperty Name="Qty_After" ColumnName="Qty_After" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InventorySKU">
+            <EntityTypeMapping TypeName="masterModel.InventorySKU">
+              <MappingFragment StoreEntitySet="InventorySKU">
+                <ScalarProperty Name="SKU" ColumnName="SKU" />
+                <ScalarProperty Name="fk_IdPODet" ColumnName="fk_IdPODet" />
+                <ScalarProperty Name="fk_IdInventory" ColumnName="fk_IdInventory" />
+                <ScalarProperty Name="Product" ColumnName="Product" />
+                <ScalarProperty Name="Qty" ColumnName="Qty" />
+                <ScalarProperty Name="Balance" ColumnName="Balance" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="KindOfInventory">
+            <EntityTypeMapping TypeName="masterModel.KindOfInventory">
+              <MappingFragment StoreEntitySet="KindOfInventory">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Kind_Inventory" ColumnName="Kind_Inventory" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MixCreation">
+            <EntityTypeMapping TypeName="masterModel.MixCreation">
+              <MappingFragment StoreEntitySet="MixCreation">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ProductName" ColumnName="ProductName" />
+                <ScalarProperty Name="PreSale" ColumnName="PreSale" />
+                <ScalarProperty Name="Qty" ColumnName="Qty" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MixCreationDetails">
+            <EntityTypeMapping TypeName="masterModel.MixCreationDetails">
+              <MappingFragment StoreEntitySet="MixCreationDetails">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="fk_IdMixCreation" ColumnName="fk_IdMixCreation" />
+                <ScalarProperty Name="fk_IdInventorySKU" ColumnName="fk_IdInventorySKU" />
+                <ScalarProperty Name="Qty" ColumnName="Qty" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PO">
+            <EntityTypeMapping TypeName="masterModel.PO">
+              <MappingFragment StoreEntitySet="PO">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="fk_IdVendor" ColumnName="fk_IdVendor" />
+                <ScalarProperty Name="fk_IdKindOfInventory" ColumnName="fk_IdKindOfInventory" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PODet">
+            <EntityTypeMapping TypeName="masterModel.PODet">
+              <MappingFragment StoreEntitySet="PODet">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="fk_IdPO" ColumnName="fk_IdPO" />
+                <ScalarProperty Name="Product" ColumnName="Product" />
+                <ScalarProperty Name="Qty" ColumnName="Qty" />
+                <ScalarProperty Name="Balance" ColumnName="Balance" />
+                <ScalarProperty Name="Unit" ColumnName="Unit" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SalesOrder">
+            <EntityTypeMapping TypeName="masterModel.SalesOrder">
+              <MappingFragment StoreEntitySet="SalesOrder">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="fk_SKUInventorySKU" ColumnName="fk_SKUInventorySKU" />
+                <ScalarProperty Name="Product" ColumnName="Product" />
+                <ScalarProperty Name="Qty" ColumnName="Qty" />
+                <ScalarProperty Name="Unit" ColumnName="Unit" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Vendors">
+            <EntityTypeMapping TypeName="masterModel.Vendors">
+              <MappingFragment StoreEntitySet="Vendors">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Currency" ColumnName="Currency" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Ninguno" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

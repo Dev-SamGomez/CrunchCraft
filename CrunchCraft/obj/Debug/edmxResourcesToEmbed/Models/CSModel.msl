@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="masterModelStoreContainer" CdmEntityContainer="masterEntities">
+    <EntitySetMapping Name="AccountsPayable">
+      <EntityTypeMapping TypeName="masterModel.AccountsPayable">
+        <MappingFragment StoreEntitySet="AccountsPayable">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="Qty" ColumnName="Qty" />
+          <ScalarProperty Name="Price" ColumnName="Price" />
+          <ScalarProperty Name="Currency" ColumnName="Currency" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="PayDate" ColumnName="PayDate" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ActiveInventory">
+      <EntityTypeMapping TypeName="masterModel.ActiveInventory">
+        <MappingFragment StoreEntitySet="ActiveInventory">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="fk_IdPO" ColumnName="fk_IdPO" />
+          <ScalarProperty Name="ProductName" ColumnName="ProductName" />
+          <ScalarProperty Name="Qty" ColumnName="Qty" />
+          <ScalarProperty Name="Price" ColumnName="Price" />
+          <ScalarProperty Name="Unit" ColumnName="Unit" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Inventory">
+      <EntityTypeMapping TypeName="masterModel.Inventory">
+        <MappingFragment StoreEntitySet="Inventory">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Product" ColumnName="Product" />
+          <ScalarProperty Name="Qty" ColumnName="Qty" />
+          <ScalarProperty Name="PublicPrice" ColumnName="PublicPrice" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="InventoryAdjustements">
+      <EntityTypeMapping TypeName="masterModel.InventoryAdjustements">
+        <MappingFragment StoreEntitySet="InventoryAdjustements">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="fk_IdKindOfInventory" ColumnName="fk_IdKindOfInventory" />
+          <ScalarProperty Name="KindOfAdjust" ColumnName="KindOfAdjust" />
+          <ScalarProperty Name="Qty_Before" ColumnName="Qty_Before" />
+          <ScalarProperty Name="Qty_After" ColumnName="Qty_After" />
+          <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="InventorySKU">
+      <EntityTypeMapping TypeName="masterModel.InventorySKU">
+        <MappingFragment StoreEntitySet="InventorySKU">
+          <ScalarProperty Name="SKU" ColumnName="SKU" />
+          <ScalarProperty Name="fk_IdPODet" ColumnName="fk_IdPODet" />
+          <ScalarProperty Name="fk_IdInventory" ColumnName="fk_IdInventory" />
+          <ScalarProperty Name="Product" ColumnName="Product" />
+          <ScalarProperty Name="Qty" ColumnName="Qty" />
+          <ScalarProperty Name="Balance" ColumnName="Balance" />
+          <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="KindOfInventory">
+      <EntityTypeMapping TypeName="masterModel.KindOfInventory">
+        <MappingFragment StoreEntitySet="KindOfInventory">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Kind_Inventory" ColumnName="Kind_Inventory" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="MixCreation">
+      <EntityTypeMapping TypeName="masterModel.MixCreation">
+        <MappingFragment StoreEntitySet="MixCreation">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="ProductName" ColumnName="ProductName" />
+          <ScalarProperty Name="PreSale" ColumnName="PreSale" />
+          <ScalarProperty Name="Qty" ColumnName="Qty" />
+          <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="MixCreationDetails">
+      <EntityTypeMapping TypeName="masterModel.MixCreationDetails">
+        <MappingFragment StoreEntitySet="MixCreationDetails">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="fk_IdMixCreation" ColumnName="fk_IdMixCreation" />
+          <ScalarProperty Name="fk_IdInventorySKU" ColumnName="fk_IdInventorySKU" />
+          <ScalarProperty Name="Qty" ColumnName="Qty" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PO">
+      <EntityTypeMapping TypeName="masterModel.PO">
+        <MappingFragment StoreEntitySet="PO">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="fk_IdVendor" ColumnName="fk_IdVendor" />
+          <ScalarProperty Name="fk_IdKindOfInventory" ColumnName="fk_IdKindOfInventory" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PODet">
+      <EntityTypeMapping TypeName="masterModel.PODet">
+        <MappingFragment StoreEntitySet="PODet">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="fk_IdPO" ColumnName="fk_IdPO" />
+          <ScalarProperty Name="Product" ColumnName="Product" />
+          <ScalarProperty Name="Qty" ColumnName="Qty" />
+          <ScalarProperty Name="Balance" ColumnName="Balance" />
+          <ScalarProperty Name="Unit" ColumnName="Unit" />
+          <ScalarProperty Name="Price" ColumnName="Price" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SalesOrder">
+      <EntityTypeMapping TypeName="masterModel.SalesOrder">
+        <MappingFragment StoreEntitySet="SalesOrder">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="fk_SKUInventorySKU" ColumnName="fk_SKUInventorySKU" />
+          <ScalarProperty Name="Product" ColumnName="Product" />
+          <ScalarProperty Name="Qty" ColumnName="Qty" />
+          <ScalarProperty Name="Unit" ColumnName="Unit" />
+          <ScalarProperty Name="Price" ColumnName="Price" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Vendors">
+      <EntityTypeMapping TypeName="masterModel.Vendors">
+        <MappingFragment StoreEntitySet="Vendors">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Currency" ColumnName="Currency" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

@@ -1,0 +1,70 @@
+﻿@model CrunchCraft.Models.ViewModels.VendorsModel
+@{
+	ViewBag.Title = "Proveedores";
+}
+
+<h2>Vendors</h2>
+<div class="row container-tables">
+	<div class="col-12">
+		<div class="custom-div" data-toggle="modal" data-target="#exampleModal">
+			<button class="btn custom-button">Agregar</button>
+		</div>
+	</div>
+	<div class="container">
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>Nombre</th>
+					<th>Tipo Moneda</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var producto in ViewBag.vendors)
+				{
+					<tr>
+						<td>@producto.Name</td>
+						<td>@producto.Currency</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+	<hr>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">Agregando material</h5>
+			</div>
+			<div class="modal-body">
+				<form asp-controller="AccionController" asp-action="Vendors" method="post">
+					<div class="form-group row">
+						<label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm">Nombre proveedor</label>
+						<div class="col-sm-10">
+							<input type="text" name="Name" class="form-control form-control-sm" id="colFormLabelSm" placeholder="obligatorio">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm">Tipo de Moneda</label>
+						<div class="col-sm-10">
+							<input type="text" name="Currency" class="form-control form-control-sm" id="colFormLabelSm" placeholder="obligatorio">
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="submit" class="btn btn-primary">Guardar</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+@if (TempData["AlertMessage"] != null)
+{
+	<script>
+        $(document).ready(function () {
+            alert('@TempData["AlertMessage"]');
+        });
+	</script>
+}

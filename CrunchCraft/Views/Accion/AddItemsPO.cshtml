@@ -1,0 +1,340 @@
+﻿@model CrunchCraft.Models.ViewModels.PODetViewModel
+@{
+	ViewBag.Title = "AddItemsPO";
+}
+
+<h2>Crear orden de compra</h2>
+
+<div class="container">
+	<form asp-controller="AccionController" asp-action="AddItemsPO" method="post">
+		<div class="form-group">
+			<p>Tipo de Inventario</p>
+			<div class="form-check form-check-inline">
+				<input class="form-check-input" type="radio" name="tipoInventario" id="materiaPrimaRadio" value="MateriaPrima">
+				<label class="form-check-label" for="materiaPrimaRadio">Materia Prima</label>
+			</div>
+			<div class="form-check form-check-inline">
+				<input class="form-check-input" type="radio" name="tipoInventario" id="activoFijoRadio" value="ActivoFijo">
+				<label class="form-check-label" for="activoFijoRadio">Activo Fijo</label>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<p>Proveedor</p>
+			<select class="form-control" id="proveedorSelect" name="proveedor">
+				<option value="">Selecciona un proveedor...</option>
+			</select>
+		</div>
+
+		<div class="form-group">
+			<p>Lista de productos</p>
+			<select class="form-control" id="productosSelect" name="producto">
+				<option value="">Selecciona un producto...</option>
+			</select>
+			<input type="text" class="form-control" id="nombreArticulo" name="nombreArticulo" style="display: none">
+		</div>
+
+		<div class="form-group">
+			<label for="cantidad">Cantidad</label>
+			<input type="text" class="form-control" id="cantidad" name="cantidad">
+		</div>
+
+		<div class="form-group">
+			<label for="unidadMedida">Unidad de medida</label>
+			<input type="text" class="form-control" id="unidadMedida" name="unidadMedida">
+		</div>
+
+		<div class="form-group">
+			<label for="precio">Precio</label>
+			<input type="text" class="form-control" id="precio" name="precio">
+			<small class="form-text text-muted">Ingresa el precio en la moneda correspondiente.</small>
+		</div>
+
+		<button type="button" class="btn btn-primary" id="agregarProducto">Agregar Producto</button>
+		<button type="submit" class="btn btn-success" id="guardarInventario">Guardar Inventario</button>
+		<div id="data-products-modelintransit" name="producto" hidden></div>
+	</form>
+
+	<h2>Productos Agregados</h2>
+	<table class="table" id="items">
+		<thead>
+			<tr>
+				<th>Producto</th>
+				<th>Cantidad</th>
+				<th>Unidad de medida</th>
+				<th>Precio</th>
+			</tr>
+		</thead>
+		<tbody id="tablaProductos">
+			<tr>
+			</tr>
+		</tbody>
+	</table>
+</div>
+<script>
+	var indiceEdicion = -1;
+	var itemEditado = null;
+	var editandoItem = false;
+	var seleccion = '';
+
+	$(document).ready(function () {
+
+        $("#productosSelect").prop("disabled", true);
+        $("#proveedorSelect").prop("disabled", true);
+
+        $('input[type="radio"][name="tipoInventario"]').change(function () {
+            seleccion = $(this).val();
+            if (seleccion === "MateriaPrima") {
+                $("#productosSelect").prop("disabled", false);
+                $("#proveedorSelect").prop("disabled", true);
+                llenarProductosSelect(@Html.Raw(Json.Encode(ViewBag.Inventory)));
+            } else if (seleccion === "ActivoFijo") {
+                $("#productosSelect").prop("disabled", false);
+                $("#proveedorSelect").prop("disabled", true);
+                llenarProductosSelect(@Html.Raw(Json.Encode(ViewBag.ActiveInv)));
+            }
+            $("#proveedorSelect").prop("disabled", false);
+        });
+
+        function llenarProductosSelect(opciones) {
+            var productosSelect = $("#productosSelect");
+            productosSelect.empty();
+            productosSelect.append($("<option value=''>Selecciona un producto...</option>"));
+            opciones.forEach(function (opcion) {
+                productosSelect.append($("<option></option>").attr("value", opcion).text(opcion));
+            });
+		}
+
+        $("#proveedorSelect").change(function () {
+            $("#proveedorSelect").prop("disabled", true);
+        });
+	});
+
+	$('input[type="radio"][name="tipoInventario"]').change(function () {
+		var seleccion = $(this).val();
+		if (seleccion === "MateriaPrima") {
+			$("#productosSelect").prop("disabled", false).show();
+			$("#nombreArticulo").hide();
+			$("p:contains('Lista de productos')").text("Lista de productos");
+		} else if (seleccion === "ActivoFijo") {
+			$("#productosSelect").prop("disabled", true).hide();
+			$("#nombreArticulo").show();
+			$("p:contains('Lista de productos')").text("Nombre del artículo");
+		}
+		$("#proveedorSelect").prop("disabled", false);
+	});
+
+	var productosAgregados = [];
+
+	function validarFormulario() {
+		var seleccion = $('input[type="radio"][name="tipoInventario"]:checked').val();
+		var producto = "";
+
+		if (seleccion === "MateriaPrima") {
+			producto = document.getElementById("productosSelect").value;
+		} else if (seleccion === "ActivoFijo") {
+			producto = document.getElementById("nombreArticulo").value;
+		}
+
+		var cantidad = document.getElementById("cantidad").value.trim();
+		var unidadMedida = document.getElementById("unidadMedida").value.trim();
+		var precio = document.getElementById("precio").value.trim();
+
+		var regexUnidadMedida = /^[a-zA-Z\s]*$/;
+		var regexNumerico = /^[0-9]+(\.[0-9]+)?$/;
+		var regexUnidadSI = /^(m|kg|s|A|K|mol|cd)*$/i;
+
+		if (producto === "") {
+			alert("El campo Nombre del Artículo no puede estar vacío.");
+			document.getElementById("nombreArticulo").focus();
+			return false;
+		}
+		if (!regexNumerico.test(cantidad)) {
+			alert("La Cantidad debe ser un número, ya sea entero o decimal.");
+			document.getElementById("cantidad").focus();
+			return false;
+		}
+		if (!regexUnidadMedida.test(unidadMedida) || !regexUnidadSI.test(unidadMedida)) {
+			alert("La Unidad de Medida debe contener solo letras y ser una unidad válida del Sistema Internacional.");
+			document.getElementById("unidadMedida").focus();
+			return false;
+		}
+		if (!regexNumerico.test(precio)) {
+			alert("El Precio debe ser un número, ya sea entero o decimal.");
+			document.getElementById("precio").focus();
+			return false;
+		}
+		if (editandoItem) {
+			if (cantidad !== itemEditado.Cantidad && precio === itemEditado.Precio) {
+				alert("Has cambiado la Cantidad, pero no el Precio.");
+			} else if (cantidad === itemEditado.Cantidad && precio !== itemEditado.Precio) {
+				alert("Has cambiado el Precio, pero no la Cantidad.");
+			}
+		}
+		agregarProducto();
+	}
+
+	function agregarProducto() {
+		var seleccion = $('input[type="radio"][name="tipoInventario"]:checked').val();
+		var producto = "";
+
+		if (seleccion === "MateriaPrima") {
+			producto = document.getElementById("productosSelect").value;
+		} else if (seleccion === "ActivoFijo") {
+			producto = document.getElementById("nombreArticulo").value;
+		}
+
+		var cantidad = document.getElementById("cantidad").value;
+		var unidadMedida = document.getElementById("unidadMedida").value;
+		var precio = document.getElementById("precio").value;
+
+		if (producto && cantidad && unidadMedida && precio) {
+			if (editandoItem) {
+				productosAgregados[indiceEdicion] = {
+					Producto: producto,
+					Cantidad: cantidad,
+					UnidadMedida: unidadMedida,
+					Precio: precio
+				};
+				itemEditado = null;
+				editandoItem = false;
+				indiceEdicion = -1;
+			} else {
+				productosAgregados.push({ Producto: producto, Cantidad: cantidad, UnidadMedida: unidadMedida, Precio: precio });
+			}
+
+			if (seleccion === "MateriaPrima") {
+				document.getElementById("productosSelect").value = "";
+			} else if (seleccion === "ActivoFijo") {
+				document.getElementById("nombreArticulo").value = "";
+			}
+			document.getElementById("cantidad").value = "";
+			document.getElementById("unidadMedida").value = "";
+			document.getElementById("precio").value = "";
+
+			actualizarTablaProductos();
+		}
+	}
+
+	function actualizarTablaProductos() {
+		var tabla = document.getElementById("tablaProductos");
+		tabla.innerHTML = "";
+
+		productosAgregados.forEach(function (producto, index) {
+			var fila = tabla.insertRow(0);
+			var celdaProducto = fila.insertCell(0);
+			var celdaCantidad = fila.insertCell(1);
+			var celdaUnidadMedida = fila.insertCell(2);
+			var celdaPrecio = fila.insertCell(3);
+			var celdaEditar = fila.insertCell(4);
+			var celdaBorrar = fila.insertCell(5);
+
+			celdaProducto.innerHTML = producto.Producto;
+			celdaCantidad.innerHTML = producto.Cantidad;
+			celdaUnidadMedida.innerHTML = producto.UnidadMedida;
+			celdaPrecio.innerHTML = producto.Precio;
+
+			var botonEditar = document.createElement("button");
+			botonEditar.textContent = "Editar";
+			botonEditar.className = "btn btn-warning";
+			botonEditar.addEventListener("click", function () {
+				editarProducto(index);
+			});
+			celdaEditar.appendChild(botonEditar);
+
+			var botonBorrar = document.createElement("button");
+			botonBorrar.textContent = "Borrar";
+			botonBorrar.className = "btn btn-danger";
+			botonBorrar.addEventListener("click", function () {
+				borrarProducto(index);
+			});
+			celdaBorrar.appendChild(botonBorrar);
+		});
+	}
+
+	function editarProducto(index) {
+		itemEditado = productosAgregados[index];
+		editandoItem = true;
+
+		var producto = productosAgregados[index];
+		var seleccion = $('input[type="radio"][name="tipoInventario"]:checked').val();
+		document.getElementById("cantidad").value = producto.Cantidad;
+		document.getElementById("unidadMedida").value = producto.UnidadMedida;
+		document.getElementById("precio").value = producto.Precio;
+
+		if (seleccion === "MateriaPrima") {
+			document.getElementById("productosSelect").value = producto.Producto;
+		} else if (seleccion === "ActivoFijo") {
+			document.getElementById("nombreArticulo").value = producto.Producto;
+		}
+
+		indiceEdicion = index;
+	}
+
+	function borrarProducto(index) {
+		productosAgregados.splice(index, 1);
+		actualizarTablaProductos();
+	}
+
+	function FillVendorsSelect(opciones) {
+		var productosSelect = $("#proveedorSelect");
+		productosSelect.empty();
+		productosSelect.append($("<option value=''>Selecciona un proveedor...</option>"));
+		opciones.forEach(function (opcion) {
+			productosSelect.append($("<option></option>").attr("value", opcion).text(opcion));
+		});
+	}
+
+	$(document).ready(function () {
+		$("#guardarInventario").click(function () {
+
+			let oProveedor = document.getElementById("proveedorSelect").value;
+
+			seleccion = seleccion == 'MateriaPrima' ? 'Materia Prima' : 'Activo Fijo';
+
+			var datosTabla = [];
+			$("#items tbody tr").each(function () {
+				var columna1 = $(this).find("td:eq(0)").text();
+				var columna2 = $(this).find("td:eq(1)").text();
+				var columna3 = $(this).find("td:eq(2)").text();
+				var columna4 = $(this).find("td:eq(3)").text();
+
+				datosTabla.push({
+					producto: columna1,
+					cantidad: columna2,
+					unidadMedida: columna3,
+					precio: columna4,
+					proveedor: oProveedor,
+					tipoInventario: seleccion
+				});
+				//document.getElementById("producto").innerHTML = columna1 + ';' + columna2 + ';' + columna3 +';' + columna4;
+			});
+			//datosTabla.map(a => {
+			//	console.log(a);
+			//});
+			console.log(JSON.stringify({ modelItems: datosTabla }));
+			$.ajax({
+				url: '/Accion/AddItemsPO',
+				type: 'POST',
+				dataType: 'json',
+				/*traditional: true,*/
+				contentType: "application/json",
+				data: JSON.stringify({ modelItems: datosTabla }),
+				//async: true,
+				//cache: false,
+				success: function (result) {
+					console.log(result);
+				},
+				error: function (error) {
+					console.error(error);
+				}
+			});
+			event.preventDefault();
+		});
+	});
+
+	FillVendorsSelect(@Html.Raw(Json.Encode(ViewBag.Vendors)));
+	document.getElementById("agregarProducto").addEventListener("click", validarFormulario);
+
+</script>
+

@@ -1,0 +1,16 @@
+﻿body {
+}
+
+.custom-div {
+	text-align: right;
+}
+
+.custom-button {
+	background-color: #41769c;
+	color: #fff;
+}
+
+.custom-button:hover {
+	background-color: #fff;
+	color: #000000;	
+}

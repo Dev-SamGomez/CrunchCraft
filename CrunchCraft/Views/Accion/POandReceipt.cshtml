@@ -1,0 +1,53 @@
+﻿@model CrunchCraft.Models.ViewModels.POViewModel
+@{
+	ViewBag.Title = "Ordenes de compra";
+}
+<h2>@ViewBag.Title.</h2>
+
+<div class="row container-tables">
+	<div class="col-12">
+		<div class="custom-div" data-toggle="modal" data-target="#exampleModal">
+			<a href="javascript:void(0);" id="btnAgregar" class="btn custom-button">Agregar</a>
+		</div>
+	</div>
+	<div class="container">
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>Id</th>
+					<th>Proveedor</th>
+					<th>Inventario</th>
+					<th>Status</th>
+					<th>Tipo Moneda</th>
+					<th>Fecha Creacion</th>
+					<th>Total</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var oPos in ViewBag.POS)
+				{
+				<tr>
+					<td>@oPos.Id</td>
+					<td>@oPos.Proveedor</td>
+					<td>@oPos.Inventario</td>
+					<td>@oPos.Status</td>
+					<td>@oPos.Currency</td>
+					<td>@oPos.FechaCreacion</td>
+					<td>@oPos.Total</td>
+					<td>
+						<a href="#" class="" data-id="@oPos.Id">
+							Detalles
+						</a>
+					</td>
+				</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+	<hr>
+</div>
+<script>
+	 document.getElementById("btnAgregar").addEventListener("click", function () {
+        window.open("@Url.Action("AddItemsPO", "Accion", null, Request.Url.Scheme)", "_blank");
+    });
+</script>
